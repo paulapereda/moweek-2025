@@ -1,9 +1,5 @@
 pacman::p_load(tidyverse, rvest, httr)
 
-category_path <- "/vestimenta/"
-type_label <- "Vestimenta"
-file_stub <- "clothing"
-
 scrape_category <- function(category_path, type_label, file_stub) {
   base_url <- "https://moweek.com.uy"
 
@@ -88,3 +84,4 @@ scrape_category("/calzado/", "Calzado", "shoes")
 scrape_category("/carteras-y-bolsos/", "Carteras y bolsos", "bags")
 scrape_category("/joyeria-y-bijou/", "Joyería y bijou", "jewelry")
 scrape_category("/accesorios/", "Accesorios", "accesories")
+scrape_category("/beauty/", "Belleza", "beauty")
