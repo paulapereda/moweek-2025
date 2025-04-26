@@ -51,4 +51,8 @@ po/*~
 # RStudio Connect folder
 rsconnect/
 
+# Data
+data/
 
+# Images previa
+images-previa/
