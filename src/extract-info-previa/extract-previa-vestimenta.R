@@ -12,7 +12,7 @@ scrape_category <- function(category_path, type_label, file_stub) {
       paste0(category_path, "50?filters=10070"),
       paste0(category_path, "50?filters=1007100"),
       
-      ## Catgorías que saco para ver si es más rápido
+      ## Categorías que saco para ver si es más rápido
       "/vestimenta/activewear/50",
       "/vestimenta/bodywear/50",
       "/vestimenta/chalecos-y-kimonos/50",

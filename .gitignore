@@ -54,8 +54,11 @@ rsconnect/
 # Data
 data/
 
-# Images previa
-images-previa/
+# Images
+*.jpg
+*.png
+*.jpeg
+*.webp
 
 # To do & ideas
 ideas.pdf
