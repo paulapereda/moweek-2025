@@ -10,17 +10,8 @@ scrape_category <- function(category_path, type_label, file_stub) {
     str_replace_all("1", "50") %>%
     discard(~ .x %in% c(
       paste0(category_path, "50"),
-      "/vestimenta/activewear/50",
-      "/vestimenta/bodywear/50",
-      "/vestimenta/leggings-y-bikers/50",
-      "/vestimenta/lenceria/50",
-      "/vestimenta/pijamas-y-camisones/50",
-      "/vestimenta/trajes-de-bano/50",
-      "/vestimenta/hombres/50",
-      "/vestimenta/ninos/50",
-      "/vestimenta/50?filters=5070",                   
-      "/vestimenta/50?filters=50750",
-      "https://moweek.com.uy/vestimenta/pantalones/50"
+      "/beauty/50?filters=50750",                                                     
+      "https://moweek.com.uy/beauty/50?category2=50506&minPrice=$830&maxPrice=$8.557"
     ))
   
   product_data <- tibble()
@@ -85,7 +76,8 @@ scrape_category <- function(category_path, type_label, file_stub) {
     }
   }
   
-  write_rds(product_data, here("data", "previa", paste0("product2_", file_stub, ".rds")))
+  write_rds(product_data, here("data", "previa", paste0("product_", file_stub, ".rds")))
 }
 
-scrape_category("/vestimenta/", "Vestimenta", "clothing")
+scrape_category("/beauty/", "Belleza", "beauty")
+

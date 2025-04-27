@@ -3,16 +3,16 @@ scrape_category <- function(category_path, type_label, file_stub) {
   
   # Load page and get matching category URLs
   webpage <- read_html(GET(base_url) %>% content("text"))
+  
   category_urls <- html_nodes(webpage, ".expandedCategory a") %>%
     html_attr("href") %>%
     str_subset(category_path) %>%
     str_replace_all("1", "50") %>%
     discard(~ .x %in% c(
       paste0(category_path, "50"),
-      paste0(category_path, "50?filters=10070"),
-      paste0(category_path, "50?filters=1007100"),
+      "/joyeria-y-bijou/50?filters=5070",                 
+      "/joyeria-y-bijou/50?filters=50750", 
       "https://moweek.com.uy/joyeria-y-bijou/collares/50"
-      
     ))
   
   product_data <- tibble()
@@ -77,7 +77,7 @@ scrape_category <- function(category_path, type_label, file_stub) {
     }
   }
   
-  write_rds(product_data, here("data", "previa", paste0("product_", file_stub, ".rds")))
+  write_rds(product_data, here("data", "previa", paste0("product2_", file_stub, ".rds")))
 }
 
 scrape_category("/joyeria-y-bijou/", "Joyería y bijou", "jewelry")
