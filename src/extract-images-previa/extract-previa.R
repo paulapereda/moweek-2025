@@ -103,7 +103,7 @@ subcategory_links <- subcategory_links[!(subcategory_links %in% c(
 ))]
 
 # Create main folder for images
-dir_create("images/previa")
+dir_create("images/images/previa-03")
 
 # Function to scrape and download images from a subcategory
 scrape_images_subcategory <- function(subcat_url) {
@@ -134,9 +134,9 @@ scrape_images_subcategory <- function(subcat_url) {
   # Subcategory (if any)
   if (ncol(parts) > 1) {
     sub_cat <- parts[2]
-    folder_path <- file.path("images/previa", main_cat, sub_cat)
+    folder_path <- file.path("images/previa-03", main_cat, sub_cat)
   } else {
-    folder_path <- file.path("images/previa", main_cat)
+    folder_path <- file.path("images/previa-03", main_cat)
   }
   
   # Create the folder
