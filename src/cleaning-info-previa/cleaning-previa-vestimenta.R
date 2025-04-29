@@ -8,6 +8,12 @@ clean_vestimenta <- vestimenta %>%
   filter(!(price %in% c("$ 5.200\n\n                                                    $ 4.160"))) %>%
   mutate(
 
+    image_name = name %>%
+      str_to_lower() %>%                         # lowercase
+      str_replace_all("[^a-z0-9]+", "_") %>%     # replace anything that's not a-z, 0-9 with _
+      str_replace_all("_+", "_") %>%             # collapse multiple underscores
+      str_remove("^_|_$"),                       # remove leading or trailing underscores
+    
     # Paso 1: limpiar price
     price = price %>%
       str_remove_all("\\.") %>% # eliminar puntos

@@ -7,6 +7,12 @@ carteras <- read_rds(here("data", "previa", "product_bags.rds"))
 clean_carteras <- carteras %>% 
   mutate(
     
+    image_name = name %>%
+      str_to_lower() %>%                         # lowercase
+      str_replace_all("[^a-z0-9]+", "_") %>%     # replace anything that's not a-z, 0-9 with _
+      str_replace_all("_+", "_") %>%             # collapse multiple underscores
+      str_remove("^_|_$"),                       # remove leading or trailing underscores
+    
     # Paso 1: limpiar price
     price = price %>%
       str_remove_all("\\.") %>% # eliminar puntos
