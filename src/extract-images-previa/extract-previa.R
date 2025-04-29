@@ -26,15 +26,10 @@ get_subcategories <- function(category_url) {
 }
 
 # Build full subcategories list
-subcategory_links <- map(main_categories, get_subcategories) %>%
-  flatten_chr() %>%
-  unique() %>%
-  str_replace("/1$", "/50")
-
 subcategory_links <- subcategory_links[!(subcategory_links %in% c(
-  
+
   # Vestimenta
-  "/vestimenta/50", 
+  "/vestimenta/50",
   "/vestimenta/activewear/50",
   "/vestimenta/bodywear/50",
   "/vestimenta/chalecos-y-kimonos/50",
@@ -46,48 +41,48 @@ subcategory_links <- subcategory_links[!(subcategory_links %in% c(
   "/vestimenta/ninos/50",
   "/vestimenta/1?filters=170",
   "/vestimenta/1?filters=171",
-  
+
   # Calzado
   "/calzado/50",
   "/calzado/ninos/50",
   "/calzado/hombres/50",
   "/calzado/1?filters=170",
   "/calzado/1?filters=171",
-  
+
   # Carteras y bolsos
   "/carteras-y-bolsos/50",
   "/carteras-y-bolsos/1?filters=170",
   "/carteras-y-bolsos/1?filters=171",
-  
+
   # Joyería y bijou
   "/joyeria-y-bijou/50",
   "/joyeria-y-bijou/1?filters=170",
   "/joyeria-y-bijou/1?filters=171",
-  
-  
+
+
   # Accesorios
-  "/accesorios/50", 
+  "/accesorios/50",
   "/accesorios/billeteras/50",
-  "/accesorios/bufandas/50",                  
+  "/accesorios/bufandas/50",
   "/accesorios/cinturones/50",
   "/accesorios/deco/50",
-  "/accesorios/espejos/50",                   
+  "/accesorios/espejos/50",
   "/accesorios/guantes/50",
   "/accesorios/lentes-de-receta/50",
-  "/accesorios/lentes-de-sol/50",             
+  "/accesorios/lentes-de-sol/50",
   "/accesorios/lonas-y-pareos/50",
   "/accesorios/mantas/50",
-  "/accesorios/mates-y-materas/50",           
+  "/accesorios/mates-y-materas/50",
   "/accesorios/medias/50",
   "/accesorios/necessaries/50",
-  "/accesorios/panuelos/50",                  
+  "/accesorios/panuelos/50",
   "/accesorios/pelo/50",
   "/accesorios/sombreros-y-gorros/50",
-  "/accesorios/otros/50",                     
+  "/accesorios/otros/50",
   "/accesorios/hombres/50",
   "/accesorios/1?filters=170",
   "/accesorios/1?filters=171",
-  
+
   # Beauty
   "/beauty/50",
   "/beauty/cuerpo/50",
@@ -97,13 +92,13 @@ subcategory_links <- subcategory_links[!(subcategory_links %in% c(
   "/beauty/onerique/50",
   "/beauty/redken/50",
   "/beauty/kerastase/50",
-  "/beauty/l-rsquo-oreal-professionnel/50",   
+  "/beauty/l-rsquo-oreal-professionnel/50",
   "/beauty/matrix/50",
   "/beauty/1?filters=171"
 ))]
 
 # Create main folder for images
-dir_create("images/images/previa-03")
+dir_create("images/previa-03")
 
 # Function to scrape and download images from a subcategory
 scrape_images_subcategory <- function(subcat_url) {
@@ -117,21 +112,36 @@ scrape_images_subcategory <- function(subcat_url) {
     html_attr("data-src") %>%
     unique()
   
-  if (length(image_links) == 0) return(NULL)
+  # Extract product names
+  product_names <- subcat_page %>%
+    html_nodes("h2.productViewName") %>%
+    html_text(trim = TRUE) %>%
+    tolower() %>%
+    str_replace_all("[^a-z0-9]+", "_") %>%   # replace any non-alphanumeric with underscores
+    str_replace_all("_+", "_") %>%           # compress multiple underscores
+    str_remove("^_|_$")                      # remove leading/trailing underscores
+  
+  
+  # Make sure the number of images and names match
+  n_images <- length(image_links)
+  n_names <- length(product_names)
+  
+  # If mismatch, only keep the minimum length to avoid errors
+  n <- min(n_images, n_names)
+  if (n == 0) return(NULL)
+  
+  image_links <- image_links[1:n]
+  product_names <- product_names[1:n]
   
   # Parse category and subcategory
-  # Remove the initial "/" and final "/50"
   clean_path <- subcat_url %>%
     str_remove("^/") %>%
     str_remove("/50$") 
   
-  # Split into parts
   parts <- str_split(clean_path, "/", simplify = TRUE)
   
-  # Main category (e.g., "vestimenta")
   main_cat <- parts[1]
   
-  # Subcategory (if any)
   if (ncol(parts) > 1) {
     sub_cat <- parts[2]
     folder_path <- file.path("images/previa-03", main_cat, sub_cat)
@@ -143,7 +153,7 @@ scrape_images_subcategory <- function(subcat_url) {
   dir_create(folder_path, recurse = TRUE)
   
   # Download each image into the correct folder
-  walk2(image_links, seq_along(image_links), function(img_link, i) {
+  walk2(image_links, product_names, function(img_link, prod_name) {
     
     if (!is.na(img_link) && img_link != "") {
       
@@ -152,7 +162,7 @@ scrape_images_subcategory <- function(subcat_url) {
       
       if (img_ext == "") img_ext <- "jpg"
       
-      img_name <- paste0("img_", i, ".", img_ext)
+      img_name <- paste0(prod_name, ".", img_ext)
       destfile <- file.path(folder_path, img_name)
       
       tryCatch({

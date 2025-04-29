@@ -19,19 +19,18 @@ source(here("src", "extract-info-previa", "extract-previa-joyeria.R"))
 # Info - Belleza
 source(here("src", "extract-info-previa", "extract-previa-belleza.R"))
 
+## (2) IMAGES
+
+# Info - Vestimenta, calzado, carteras, joyería, belleza
+source(here("src", "extract-images-previa", "extract-previa.R"))
+
 ### Code:
 #### - 01: previa moweek ✓
 #### - 02: domingo pre moweek ✓
-#### - 03: lunes pre moweek
+#### - 03: lunes pre moweek ✓
 #### - 04: martes pre moweek
 #### - 05: miércoles pre moweek
 #### - 06: jueves pre moweek
 #### - 07: viernes de moweek (día 1)
 #### - 08: viernes de moweek (día 2)
 #### - 09: viernes de moweek (día 3)
-
-## (2) IMAGES
-
-# Info - Vestimenta, calzado, carteras, joyería, belleza
-source(here("src", "extract-images-previa", "extract-previa.R"))
-

@@ -79,7 +79,7 @@ scrape_category <- function(category_path, type_label, file_stub) {
     }
   }
   
-  write_rds(product_data, here("data", "previa", paste0("product_03_", file_stub, ".rds")))
+  write_rds(product_data, here("data", "previa", paste0("product_04_", file_stub, ".rds")))
 }
 
 scrape_category("/calzado/", "Calzado", "shoes")
