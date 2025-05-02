@@ -40,7 +40,7 @@ scrape_category <- function(category_path, type_label, file_stub) {
   ))]
   
   product_data <- tibble()
-  for (url in category_urls) {
+  for (url in main_categories) {
     cat_url <- paste0(base_url, url)
     page <- read_html(RETRY("GET", cat_url) %>% content("text"))
     cat_name <- html_text(html_node(page, "title")) %>%
