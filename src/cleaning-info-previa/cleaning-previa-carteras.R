@@ -2,9 +2,22 @@ pacman::p_load(tidyverse, here)
 
 # Carteras
 
-carteras <- read_rds(here("data", "previa", "product_bags.rds"))
+carteras_01 <- read_rds(here("data", "previa", "product_01_bags.rds")) %>% 
+  distinct(name, price, brand, type, category, characteristics, sizes, colors, description)
 
-clean_carteras <- carteras %>% 
+carteras_02 <- read_rds(here("data", "previa", "product_02_bags.rds")) %>% 
+  distinct(name, price, brand, type, category, characteristics, sizes, colors, description)
+
+carteras_03 <- read_rds(here("data", "previa", "product_03_bags.rds")) %>% 
+  distinct(name, price, brand, type, category, characteristics, sizes, colors, description)
+
+carteras_04 <- read_rds(here("data", "previa", "product_04_bags.rds")) %>% 
+  distinct(name, price, brand, type, category, characteristics, sizes, colors, description)
+
+clean_carteras <- carteras_01 %>% 
+  bind_rows(carteras_02) %>% 
+  bind_rows(carteras_03) %>% 
+  bind_rows(carteras_04) %>% 
   mutate(
     
     image_name = name %>%
@@ -31,7 +44,8 @@ clean_carteras <- carteras %>%
     uruguayan_made = if_else(str_detect(characteristics, regex("Hecho en Uruguay", ignore_case = TRUE)), 1, 0),
     sustainable = if_else(str_detect(characteristics, regex("Sustentable", ignore_case = TRUE)), 1, 0)
   ) %>%
-  select(- characteristics, - description) 
+    distinct(name, price, brand, type, category, characteristics, sizes, colors, description, uruguayan_made, sustainable) %>%
+    select(- characteristics, - description)
 
 # Paso 4: separar sizes
 # Primero separar los tamaños usando salto de línea y limpiar

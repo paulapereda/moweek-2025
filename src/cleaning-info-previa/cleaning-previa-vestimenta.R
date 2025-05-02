@@ -2,9 +2,24 @@ pacman::p_load(tidyverse, here)
 
 # (1) Vestimenta
 
-vestimenta <- read_rds(here("data", "previa", "product_04_clothing.rds"))
+vestimenta_01 <- read_rds(here("data", "previa", "product_01_clothing.rds")) %>% 
+  distinct(name, price, brand, type, category, characteristics, sizes, colors, description)
 
-clean_vestimenta <- vestimenta %>% 
+vestimenta_02 <- read_rds(here("data", "previa", "product_02_clothing.rds")) %>% 
+  distinct(name, price, brand, type, category, characteristics, sizes, colors, description)
+
+vestimenta_03 <- read_rds(here("data", "previa", "product_03_clothing.rds")) %>% 
+  distinct(name, price, brand, type, category, characteristics, sizes, colors, description)
+
+vestimenta_04 <- read_rds(here("data", "previa", "product_04_clothing.rds")) %>% 
+  distinct(name, price, brand, type, category, characteristics, sizes, colors, description)
+
+
+clean_vestimenta <- vestimenta_01 %>%
+  bind_rows(vestimenta_02) %>% 
+  bind_rows(vestimenta_03) %>% 
+  bind_rows(vestimenta_04) %>% 
+  distinct(name, price, brand, type, category, characteristics, sizes, colors, description) %>% 
   filter(!(price %in% c("$ 5.200\n\n                                                    $ 4.160"))) %>%
   mutate(
 
@@ -31,8 +46,11 @@ clean_vestimenta <- vestimenta %>%
 
     uruguayan_made = if_else(str_detect(characteristics, regex("Hecho en Uruguay", ignore_case = TRUE)), 1, 0),
     sustainable = if_else(str_detect(characteristics, regex("Sustentable", ignore_case = TRUE)), 1, 0)
-  ) %>%
+  ) %>% 
+  distinct(name, price, brand, type, category, characteristics, sizes, colors, description, uruguayan_made, sustainable) %>%
   select(- characteristics, - description) 
+
+rm(vestimenta_01, vestimenta_02, vestimenta_03, vestimenta_04)
 
 # Paso 4: separar sizes
 # Primero separar los tamaños usando salto de línea y limpiar
@@ -83,6 +101,10 @@ final_data <- clean_vestimenta %>%
     color_1, color_2, color_3, color_4, color_5, color_6, color_7, color_8,
     color_9, color_10, color_11, color_12, color_13, color_14, color_15,
     color_16
+  )
+
+rm(
+  clean_vestimenta, sizes_df, sizes_split, colors_df, colors_split
   )
 
 write_rds(final_data, here("data", "previa", "clean", "product_clean_clothing.rds"))

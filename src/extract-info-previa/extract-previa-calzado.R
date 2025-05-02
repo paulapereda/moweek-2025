@@ -1,48 +1,25 @@
 scrape_category <- function(category_path, type_label, file_stub) {
   
-  # Set the base URL
   base_url <- "https://moweek.com.uy"
   
-  # Read the main page
-  main_page <- read_html(base_url)
+  # Load page and get matching category URLs
+  webpage <- read_html(GET(base_url) %>% content("text"))
   
-  # Get main category links (Vestimenta, Calzado, etc.)
-  main_categories <- main_page %>%
-    html_nodes(".headerOptions a.headerOption") %>%
-    html_attr("href")
-  
-  # Function to get subcategory links for a main category
-  get_subcategories <- function(main_categories) {
-    
-    full_url <- paste0(base_url, main_categories)
-    cat_page <- read_html(full_url)
-    
-    cat_page %>%
-      html_nodes(".expandedCategory a.categoryLevelTwoTitle") %>%
-      html_attr("href") %>%
-      unique()
-  }
-  
-  # Build full subcategories list
-  subcategory_links <- map(main_categories, get_subcategories) %>%
-    flatten_chr() %>%
-    unique() %>%
-    str_replace("/1$", "/50")
-  
-  subcategory_links <- subcategory_links[str_starts(subcategory_links, category_path)]
-  
-  subcategory_links <- subcategory_links[!(subcategory_links %in% c(
-    
-    "/calzado/50",
-    "/calzado/ninos/50",
-    "/calzado/hombres/50",
-    "/calzado/1?filters=170",
-    "/calzado/1?filters=171"
-    
-  ))]
+  category_urls <- html_nodes(webpage, ".expandedCategory a") %>%
+    html_attr("href") %>%
+    str_subset(category_path) %>%
+    str_replace_all("1", "50") %>%
+    discard(~ .x %in% c(
+      paste0(category_path, "50"),
+      "/calzado/hombres/50",
+      "/calzado/ninos/50",                               
+      "/calzado/50?filters=5070",
+      "/calzado/50?filters=50750",
+      "https://moweek.com.uy/calzado/botas-y-botines/50"
+    ))
   
   product_data <- tibble()
-  for (url in main_categories) {
+  for (url in category_urls) {
     cat_url <- paste0(base_url, url)
     page <- read_html(RETRY("GET", cat_url) %>% content("text"))
     cat_name <- html_text(html_node(page, "title")) %>%
@@ -92,8 +69,8 @@ scrape_category <- function(category_path, type_label, file_stub) {
             characteristics = characteristics,
             sizes = sizes,
             colors = colors,
-            description = description
             
+            description = description
           ))
         },
         error = function(e) {

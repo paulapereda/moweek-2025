@@ -1,56 +1,32 @@
 scrape_category <- function(category_path, type_label, file_stub) {
   
-  # Set the base URL
   base_url <- "https://moweek.com.uy"
   
-  # Read the main page
-  main_page <- read_html(base_url)
-
-  # Get main category links 
-  main_categories <- main_page %>%
-    html_nodes(".headerOptions a.headerOption") %>%
-    html_attr("href") 
-
-  # Function to get subcategory links for a main category
-  get_subcategories <- function(main_categories) {
-    
-    full_url <- paste0(base_url, main_categories)
-    cat_page <- read_html(full_url)
-    
-    cat_page %>%
-      html_nodes(".expandedCategory a.categoryLevelTwoTitle") %>%
-      html_attr("href") %>%
-      unique()
-  }
+  # Load page and get matching category URLs
+  webpage <- read_html(GET(base_url) %>% content("text"))
   
-  # Build full subcategories list
-  subcategory_links <- main_categories %>%
-    map(get_subcategories) %>%
-    flatten_chr() %>%
-    unique() %>%
-    str_replace("/1$", "/50")
-  
-  subcategory_links <- subcategory_links[str_starts(subcategory_links, category_path)]
-  
-  subcategory_links <- subcategory_links[!(subcategory_links %in% c(
-    
-    "/vestimenta/50",
-    "/vestimenta/activewear/50",
-    "/vestimenta/bodywear/50",
-    "/vestimenta/chalecos-y-kimonos/50",
-    "/vestimenta/leggings-y-bikers/50",
-    "/vestimenta/lenceria/50",
-    "/vestimenta/pijamas-y-camisones/50",
-    "/vestimenta/trajes-de-bano/50",
-    "/vestimenta/hombres/50",
-    "/vestimenta/ninos/50",
-    "/vestimenta/1?filters=170",
-    "/vestimenta/1?filters=171"
-    
-  ))]
+  category_urls <- html_nodes(webpage, ".expandedCategory a") %>%
+    html_attr("href") %>%
+    str_subset(category_path) %>% 
+    str_replace_all("1", "50") %>%
+    discard(~ .x %in% c(
+          paste0(category_path, "50"),
+          "/vestimenta/activewear/50",
+          "/vestimenta/bodywear/50",
+          "/vestimenta/leggings-y-bikers/50",
+          "/vestimenta/lenceria/50",
+          "/vestimenta/pijamas-y-camisones/50",
+          "/vestimenta/trajes-de-bano/50",
+          "/vestimenta/hombres/50",
+          "/vestimenta/ninos/50",
+          "/vestimenta/50?filters=5070",
+          "/vestimenta/50?filters=50750",
+          "https://moweek.com.uy/vestimenta/pantalones/50",
+          "https://moweek.com.uy/vestimenta/buzos-y-sacos/50"
+        ))
   
   product_data <- tibble()
-  for (url in main_categories) {
+  for (url in category_urls) {
     cat_url <- paste0(base_url, url)
     page <- read_html(RETRY("GET", cat_url) %>% content("text"))
     cat_name <- html_text(html_node(page, "title")) %>%
@@ -100,8 +76,8 @@ scrape_category <- function(category_path, type_label, file_stub) {
             characteristics = characteristics,
             sizes = sizes,
             colors = colors,
-            description = description
             
+            description = description
           ))
         },
         error = function(e) {
