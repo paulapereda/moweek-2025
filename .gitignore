@@ -54,11 +54,16 @@ rsconnect/
 # Data
 data/
 
-# Images
+# Files
 *.jpg
 *.png
 *.jpeg
 *.webp
+*.pdf
+*.docx
 
-# To do & ideas
-ideas.pdf
+# python
+venv/
+
+# Modo prueba
+fashion-trend-analyzer/

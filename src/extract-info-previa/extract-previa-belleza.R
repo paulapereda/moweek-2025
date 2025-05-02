@@ -1,18 +1,53 @@
 scrape_category <- function(category_path, type_label, file_stub) {
   base_url <- "https://moweek.com.uy"
   
-  # Load page and get matching category URLs
-  webpage <- read_html(GET(base_url) %>% content("text"))
   
-  category_urls <- html_nodes(webpage, ".expandedCategory a") %>%
-    html_attr("href") %>%
-    str_subset(category_path) %>%
-    str_replace_all("1", "50") %>%
-    discard(~ .x %in% c(
-      paste0(category_path, "50"),
-      "/beauty/50?filters=50750",                                                     
-      "https://moweek.com.uy/beauty/50?category2=50506&minPrice=$830&maxPrice=$8.557"
-    ))
+  # Set the base URL
+  base_url <- "https://moweek.com.uy"
+  
+  # Read the main page
+  main_page <- read_html(base_url)
+  
+  # Get main category links (Vestimenta, Calzado, etc.)
+  main_categories <- main_page %>%
+    html_nodes(".headerOptions a.headerOption") %>%
+    html_attr("href")
+  
+  # Function to get subcategory links for a main category
+  get_subcategories <- function(main_categories) {
+    
+    full_url <- paste0(base_url, main_categories)
+    cat_page <- read_html(full_url)
+    
+    cat_page %>%
+      html_nodes(".expandedCategory a.categoryLevelTwoTitle") %>%
+      html_attr("href") %>%
+      unique()
+  }
+  
+  # Build full subcategories list
+  subcategory_links <- map(main_categories, get_subcategories) %>%
+    flatten_chr() %>%
+    unique() %>%
+    str_replace("/1$", "/50")
+  
+  subcategory_links <- subcategory_links[str_starts(subcategory_links, category_path)]
+  
+  subcategory_links <- subcategory_links[!(subcategory_links %in% c(
+    
+    "/beauty/50",
+    "/beauty/cuerpo/50",
+    "/beauty/dermocosmetica/50",
+    "/beauty/fragancias/50",
+    "/beauty/pelo/50",
+    "/beauty/onerique/50",
+    "/beauty/redken/50",
+    "/beauty/kerastase/50",
+    "/beauty/l-rsquo-oreal-professionnel/50",
+    "/beauty/matrix/50",
+    "/beauty/1?filters=171"
+    
+  ))]
   
   product_data <- tibble()
   for (url in category_urls) {
@@ -65,8 +100,8 @@ scrape_category <- function(category_path, type_label, file_stub) {
             characteristics = characteristics,
             sizes = sizes,
             colors = colors,
-            
             description = description
+            
           ))
         },
         error = function(e) {
@@ -76,7 +111,7 @@ scrape_category <- function(category_path, type_label, file_stub) {
     }
   }
   
-  write_rds(product_data, here("data", "previa", paste0("product_04_", file_stub, ".rds")))
+  write_rds(product_data, here("data", "previa", paste0("product_06_", file_stub, ".rds")))
 }
 
 scrape_category("/beauty/", "Belleza", "beauty")

@@ -2,7 +2,7 @@ pacman::p_load(tidyverse, here)
 
 # (1) Vestimenta
 
-vestimenta <- read_rds(here("data", "previa", "product_clothing.rds"))
+vestimenta <- read_rds(here("data", "previa", "product_04_clothing.rds"))
 
 clean_vestimenta <- vestimenta %>% 
   filter(!(price %in% c("$ 5.200\n\n                                                    $ 4.160"))) %>%

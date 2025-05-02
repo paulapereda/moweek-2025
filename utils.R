@@ -9,7 +9,7 @@ pacman::p_load(tidyverse)
 # (1) Count downloaded images per folder (category)
 
 ## Count files in a folder and subfolders
-folder_path <- "images-previa"
+folder_path <- "images/previa"
 
 ## List all files (with full paths)
 file_list <- list.files(path = folder_path, recursive = TRUE, full.names = TRUE)

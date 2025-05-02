@@ -26,6 +26,11 @@ get_subcategories <- function(category_url) {
 }
 
 # Build full subcategories list
+subcategory_links <- map(main_categories, get_subcategories) %>%
+  flatten_chr() %>%
+  unique()
+
+# Build full subcategories list
 subcategory_links <- subcategory_links[!(subcategory_links %in% c(
 
   # Vestimenta
@@ -98,7 +103,7 @@ subcategory_links <- subcategory_links[!(subcategory_links %in% c(
 ))]
 
 # Create main folder for images
-dir_create("images/previa-03")
+dir_create("images/previa-06")
 
 # Function to scrape and download images from a subcategory
 scrape_images_subcategory <- function(subcat_url) {
@@ -144,9 +149,9 @@ scrape_images_subcategory <- function(subcat_url) {
   
   if (ncol(parts) > 1) {
     sub_cat <- parts[2]
-    folder_path <- file.path("images/previa-03", main_cat, sub_cat)
+    folder_path <- file.path("images/previa-06", main_cat, sub_cat)
   } else {
-    folder_path <- file.path("images/previa-03", main_cat)
+    folder_path <- file.path("images/previa-06", main_cat)
   }
   
   # Create the folder
