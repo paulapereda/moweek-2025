@@ -63,7 +63,8 @@ ggplot(top20_colors, aes(x = color, y = pct, fill = fill_color)) +
     plot.title = element_text(size = 25),
     plot.caption = element_text(size = 14),
     panel.grid.minor.x = element_blank(),
-    panel.grid.major.x = element_blank()
+    panel.grid.major.x = element_blank(),
+    axis.text.x = element_text(size = 14)
   )
 
 ggsave(here("output", "01_vestimenta_chocolate.jpg"), dpi = 300, width = 16, height = 10)
@@ -131,7 +132,8 @@ ggplot(top20_colors, aes(x = color, y = pct, fill = fill_color)) +
     plot.title = element_text(size = 25),
     plot.caption = element_text(size = 14),
     panel.grid.minor.x = element_blank(),
-    panel.grid.major.x = element_blank()
+    panel.grid.major.x = element_blank(),
+    axis.text.x = element_text(size = 14)
   )
 
 ggsave(here("output", "02_calzado_chocolate.jpg"), dpi = 300, width = 16, height = 10)
@@ -199,7 +201,8 @@ ggplot(top20_colors, aes(x = color, y = pct, fill = fill_color)) +
     plot.title = element_text(size = 25),
     plot.caption = element_text(size = 14),
     panel.grid.minor.x = element_blank(),
-    panel.grid.major.x = element_blank()
+    panel.grid.major.x = element_blank(),
+    axis.text.x = element_text(size = 14)
   )
 
 ggsave(here("output", "03_carteras_chocolate.jpg"), dpi = 300, width = 16, height = 10)
