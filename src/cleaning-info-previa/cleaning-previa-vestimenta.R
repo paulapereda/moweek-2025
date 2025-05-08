@@ -45,7 +45,8 @@ clean_vestimenta <- vestimenta_01 %>%
     # Paso 3: crear uruguayan_made y sustainable
 
     uruguayan_made = if_else(str_detect(characteristics, regex("Hecho en Uruguay", ignore_case = TRUE)), 1, 0),
-    sustainable = if_else(str_detect(characteristics, regex("Sustentable", ignore_case = TRUE)), 1, 0)
+    sustainable = if_else(str_detect(characteristics, regex("Sustentable", ignore_case = TRUE)), 1, 0),
+    sizes = if_else(sizes == "", "U", sizes)
   ) %>% 
   distinct(name, price, brand, type, category, characteristics, sizes, colors, description, uruguayan_made, sustainable) %>%
   select(- characteristics, - description) 
