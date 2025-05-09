@@ -15,12 +15,6 @@ df_long <- vestimenta %>%
 colores_destacados <- c("Chocolate", "Beige", "Cognac", "Tostado", "Cobre", "Marrón")
 
 pct_color_por_cat <- df_long %>% 
-  mutate(grupo = case_when(
-    category %in% c("Blazers Y Chaquetas", "Camperas Y Tapados", "Capas Y Ponchos") ~ "Outerwear",
-    category %in% c("Blusas Y Tops", "Camisas", "Remeras", "Buzos Y Sacos") ~ "Tops",
-    category %in% c("Jeans", "Pantalones", "Shorts Y Bermudas", "Polleras") ~ "Bottoms",
-    category %in% c("Vestidos", "Monos", "Conjuntos") ~ "One piece",
-    category %in% c("Chalecos Y Kimonos", "Ruanas Y Chales") ~ "Layering/Knit")) %>% 
   group_by(grupo, color) %>% 
   summarise(n = n(), .groups = "drop_last") %>%      # cuenta por color en cada categoría
   mutate(

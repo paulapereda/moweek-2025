@@ -2,13 +2,7 @@ pacman::p_load(hrbrthemes, tidyverse, here)
 
 # (1) Vestimenta
 
-vestimenta <- read_rds(here("data", "previa", "clean", "product_clean_clothing.rds")) %>% 
-  mutate(grupo = case_when(
-    category %in% c("Blazers Y Chaquetas", "Camperas Y Tapados", "Capas Y Ponchos") ~ "Outerwear",
-    category %in% c("Blusas Y Tops", "Camisas", "Remeras", "Buzos Y Sacos") ~ "Tops",
-    category %in% c("Jeans", "Pantalones", "Shorts Y Bermudas", "Polleras") ~ "Bottoms",
-    category %in% c("Vestidos", "Monos", "Conjuntos") ~ "One piece",
-    category %in% c("Chalecos Y Kimonos", "Ruanas Y Chales") ~ "Layering/Knit"))
+vestimenta <- read_rds(here("data", "previa", "clean", "product_clean_clothing.rds")) 
 
 prices_category_all <- vestimenta %>% 
   summarise(mean_price = round(median(price)))
